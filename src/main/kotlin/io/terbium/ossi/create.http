@@ -1,0 +1,12 @@
+POST http://localhost:8080/new?uri=hello
+Content-Type: application/json
+
+{
+  "author": "Matthieu Felix",
+  "website": null,
+  "email": "matthieufelix@gmail.com",
+  "parent": null,
+  "text": "FIRST COMMENT!!!1"
+}
+
+###

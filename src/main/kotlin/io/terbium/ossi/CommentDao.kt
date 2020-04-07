@@ -5,9 +5,27 @@ interface CommentDao {
 
     fun get_recent(uri: String, limit: Int): List<Comment>
 
-    fun new(uri: String, comment: NewComment, hash: String): Long
+    fun new(comment: DaoNewComment): Comment
 
-    fun edit(uri: String, comment: EditComment): Comment
+    fun edit(comment: DaoEditComment): Comment
 
-    fun delete(uri: String, id: Long)
+    fun delete(id: Long)
+
+    data class DaoNewComment(
+        val uri: String,
+        val parent: Long?,
+        val text: String,
+        val author: String?,
+        val website: String?,
+        val hash: String,
+        val creationTime: Long,
+        val mode: CommentMode
+    )
+
+    data class DaoEditComment(
+        val text: String,
+        val author: String?,
+        val website: String?,
+        val modificationTime: Long
+    )
 }

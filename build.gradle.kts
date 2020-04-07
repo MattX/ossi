@@ -1,6 +1,5 @@
 plugins {
     kotlin("jvm") version "1.3.70"
-    kotlin("kapt") version "1.3.70"
 }
 
 group = "io.terbium.ossi"
@@ -14,6 +13,7 @@ repositories {
 
 val ktorVersion = "1.3.2"
 val arrowVersion = "0.10.5"
+val exposedVersion = "0.23.1"
 
 dependencies {
     implementation(kotlin("stdlib-jdk8"))
@@ -22,9 +22,10 @@ dependencies {
     implementation("io.ktor:ktor-gson:$ktorVersion")
     implementation("com.google.code.gson:gson:2.8.6")
     implementation("org.xerial:sqlite-jdbc:3.30.1")
-    implementation("io.arrow-kt:arrow-optics:$arrowVersion")
-    implementation("io.arrow-kt:arrow-syntax:$arrowVersion")
-    kapt("io.arrow-kt:arrow-meta:$arrowVersion")
+    implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
+    implementation("org.jetbrains.exposed:exposed-dao:$exposedVersion")
+    implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
+    implementation("ch.qos.logback:logback-classic:1.2.3")
 }
 
 tasks {
