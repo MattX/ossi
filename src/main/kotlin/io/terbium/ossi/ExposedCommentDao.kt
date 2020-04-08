@@ -8,7 +8,9 @@ import org.jetbrains.exposed.sql.Database
 import org.jetbrains.exposed.sql.SchemaUtils
 import org.jetbrains.exposed.sql.transactions.TransactionManager
 import org.jetbrains.exposed.sql.transactions.transaction
+import java.lang.RuntimeException
 import java.sql.Connection
+import java.util.*
 
 class ExposedCommentDao(jdbcUrl: String): CommentDao {
     init {
@@ -63,8 +65,29 @@ class ExposedCommentDao(jdbcUrl: String): CommentDao {
         }
     }
 
-    override fun delete(id: Long, authorization: String): Boolean {
-        TODO("Not yet implemented")
+    override fun delete(id: Long, authorization: String): CommentDao.DeleteResponse = transaction {
+        val existing = CommentMapper.findById(id) ?: return@transaction CommentDao.DeleteResponse.NotFound
+        if (existing.authorization == authorization) {
+            existing.delete()
+            CommentDao.DeleteResponse.Ok
+        } else {
+            CommentDao.DeleteResponse.NotAuthorized
+        }
+    }
+
+    override fun vote(id: Long, clientId: String, upvote: Boolean): CommentDao.VoteResponse? {
+        if (clientId.contains(',')) throw RuntimeException("client id may not contain commas: $clientId")
+        return transaction {
+            val existing = CommentMapper.findById(id) ?: return@transaction null
+            val voterBloomFilter = VoterBloomFilter(b64dec.decode(existing.voters))
+            val canSave = voterBloomFilter.put(clientId)
+            if (canSave) {
+                if (upvote) existing.likes += 1
+                else existing.dislikes += 1
+                existing.voters = b64enc.encodeToString(voterBloomFilter.save())
+            }
+            CommentDao.VoteResponse(existing.likes, existing.dislikes, canSave)
+        }
     }
 
     object Comments: LongIdTable() {
@@ -80,6 +103,7 @@ class ExposedCommentDao(jdbcUrl: String): CommentDao {
         val created = long("created")
         val modified = long("modified").nullable()
         val authorization = text("authorization")
+        val voters = text("voters").default(b64enc.encodeToString(VoterBloomFilter.new().save()))
     }
 
     class CommentMapper(id: EntityID<Long>) : LongEntity(id) {
@@ -97,6 +121,7 @@ class ExposedCommentDao(jdbcUrl: String): CommentDao {
         var created by Comments.created
         var modified by Comments.modified
         var authorization by Comments.authorization
+        var voters by Comments.voters
 
         fun toComment(): Comment = Comment(
             id = id.value,
@@ -111,5 +136,10 @@ class ExposedCommentDao(jdbcUrl: String): CommentDao {
             created = created,
             modified = modified
         )
+    }
+
+    companion object {
+        val b64dec = Base64.getDecoder()
+        val b64enc = Base64.getEncoder()
     }
 }

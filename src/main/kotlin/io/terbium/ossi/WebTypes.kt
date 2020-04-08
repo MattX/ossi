@@ -34,6 +34,8 @@ data class Comment(
         replies = listOf(),
         totalReplies = 0
     )
+
+    fun rendered() = copy(text = renderMarkdown(text))
 }
 
 enum class CommentMode(val code: Int) {
@@ -101,7 +103,7 @@ data class ThreadComment(
     val hiddenReplies: Int = 0
 )
 
-data class NewComment(
+data class NewCommentRequest(
     val parent: Long?,
     val text: String,
     val author: String?,
@@ -120,15 +122,21 @@ data class NewComment(
     )
 }
 
-data class EditComment(
+data class EditCommentRequest(
     val text: String,
     val author: String?,
     val website: String?
 ) {
-    fun toDaoEditComment(uri: String, time: Long) = CommentDao.DaoEditComment(
+    fun toDaoEditComment(time: Long) = CommentDao.DaoEditComment(
         text = text,
         author = author,
         website = website,
         modificationTime = time
     )
 }
+
+data class PreviewRequest(val text: String)
+
+data class PreviewResponse(val text: String)
+
+data class LikeResponse(val likes: Int, val dislikes: Int)

@@ -11,7 +11,9 @@ interface CommentDao {
 
     fun edit(id: Long, comment: DaoEditComment, authorization: String): EditResponse
 
-    fun delete(id: Long, authorization: String): Boolean
+    fun delete(id: Long, authorization: String): DeleteResponse
+
+    fun vote(id: Long, clientId: String, upvote: Boolean): VoteResponse?
 
     data class DaoNewComment(
         val uri: String,
@@ -32,8 +34,16 @@ interface CommentDao {
     )
 
     sealed class EditResponse {
-        class Ok(comment: Comment) : EditResponse()
+        class Ok(val comment: Comment) : EditResponse()
         object NotFound : EditResponse()
         object NotAuthorized : EditResponse()
     }
+
+    sealed class DeleteResponse {
+        object Ok : DeleteResponse()
+        object NotFound : DeleteResponse()
+        object NotAuthorized : DeleteResponse()
+    }
+
+    data class VoteResponse(val likes: Int, val dislikes: Int, val success: Boolean)
 }

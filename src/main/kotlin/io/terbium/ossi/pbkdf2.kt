@@ -1,12 +1,13 @@
 package io.terbium.ossi
 
-import com.sun.org.apache.xml.internal.security.utils.Base64
 import java.security.SecureRandom
 import java.security.spec.KeySpec
+import java.util.*
 import javax.crypto.SecretKeyFactory
 import javax.crypto.spec.PBEKeySpec
 
 val random = SecureRandom()
+val b64enc = Base64.getEncoder()
 
 // TODO don't do this
 fun pbkdf2(of: String): String {
@@ -21,5 +22,5 @@ fun pbkdf2(of: String): String {
 fun getAuthenticationToken(): String {
     val bytes = ByteArray(32)
     random.nextBytes(bytes)
-    return Base64.encode(bytes)
+    return b64enc.encodeToString(bytes)
 }

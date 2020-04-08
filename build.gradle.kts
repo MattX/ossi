@@ -26,6 +26,8 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-dao:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
+    implementation("com.atlassian.commonmark:commonmark:0.14.0")
+    implementation("com.google.guava:guava:28.2-jre")
     implementation("ch.qos.logback:logback-classic:1.2.3")
 }
 

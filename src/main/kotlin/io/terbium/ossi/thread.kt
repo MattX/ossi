@@ -1,8 +1,7 @@
 package io.terbium.ossi
 
 fun makeThread(comments: List<Comment>): CommentThread {
-    println(comments)
-    val threadComments = comments.map { it.toThreadComment() }
+    val threadComments = comments.map { it.rendered().toThreadComment() }
     val byParent = threadComments.groupBy { it.parent }
     val byId = threadComments.associateBy { it.id }
     for ((parentId, comments) in byParent) {
