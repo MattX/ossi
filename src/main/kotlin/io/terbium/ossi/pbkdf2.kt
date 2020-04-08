@@ -1,21 +1,25 @@
 package io.terbium.ossi
 
+import com.sun.org.apache.xml.internal.security.utils.Base64
 import java.security.SecureRandom
 import java.security.spec.KeySpec
-import java.util.*
 import javax.crypto.SecretKeyFactory
 import javax.crypto.spec.PBEKeySpec
 
-private val random: SecureRandom = SecureRandom.getInstanceStrong()
-
+val random = SecureRandom()
 
 // TODO don't do this
 fun pbkdf2(of: String): String {
     val salt = ByteArray(16)
-    random.nextBytes(salt)
     val spec: KeySpec = PBEKeySpec(of.toCharArray(), salt, 65536, 128)
     val f = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1")
     val hash = f.generateSecret(spec).encoded
-    val enc: Base64.Encoder = Base64.getEncoder()
-    return "${enc.encodeToString(salt)}:${enc.encodeToString(hash)}"
+
+    return hash.take(6).joinToString("") { String.format("%02X", it) }
+}
+
+fun getAuthenticationToken(): String {
+    val bytes = ByteArray(32)
+    random.nextBytes(bytes)
+    return Base64.encode(bytes)
 }

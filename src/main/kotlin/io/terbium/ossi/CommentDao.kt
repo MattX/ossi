@@ -3,13 +3,15 @@ package io.terbium.ossi
 interface CommentDao {
     fun get(uri: String): List<Comment>
 
-    fun get_recent(uri: String, limit: Int): List<Comment>
+    fun getId(id: Long): Comment?
 
-    fun new(comment: DaoNewComment): Comment
+    fun getRecent(uri: String, limit: Int): List<Comment>
 
-    fun edit(comment: DaoEditComment): Comment
+    fun new(comment: DaoNewComment, authorization: String): Comment
 
-    fun delete(id: Long)
+    fun edit(id: Long, comment: DaoEditComment, authorization: String): EditResponse
+
+    fun delete(id: Long, authorization: String): Boolean
 
     data class DaoNewComment(
         val uri: String,
@@ -28,4 +30,10 @@ interface CommentDao {
         val website: String?,
         val modificationTime: Long
     )
+
+    sealed class EditResponse {
+        class Ok(comment: Comment) : EditResponse()
+        object NotFound : EditResponse()
+        object NotAuthorized : EditResponse()
+    }
 }

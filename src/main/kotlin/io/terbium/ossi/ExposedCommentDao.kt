@@ -10,7 +10,7 @@ import org.jetbrains.exposed.sql.transactions.TransactionManager
 import org.jetbrains.exposed.sql.transactions.transaction
 import java.sql.Connection
 
-class ExposedCommentDao(private val jdbcUrl: String): CommentDao {
+class ExposedCommentDao(jdbcUrl: String): CommentDao {
     init {
         Database.connect(jdbcUrl)
         TransactionManager.manager.defaultIsolationLevel = Connection.TRANSACTION_SERIALIZABLE
@@ -26,11 +26,15 @@ class ExposedCommentDao(private val jdbcUrl: String): CommentDao {
         return comments.map(CommentMapper::toComment)
     }
 
-    override fun get_recent(uri: String, limit: Int): List<Comment> {
+    override fun getId(id: Long): Comment? = transaction {
+        CommentMapper.findById(id)?.toComment()
+    }
+
+    override fun getRecent(uri: String, limit: Int): List<Comment> {
         TODO("Not yet implemented")
     }
 
-    override fun new(comment: CommentDao.DaoNewComment): Comment {
+    override fun new(comment: CommentDao.DaoNewComment, authorization: String): Comment {
         val created = transaction {
             CommentMapper.new {
                 uri = comment.uri
@@ -41,16 +45,25 @@ class ExposedCommentDao(private val jdbcUrl: String): CommentDao {
                 website = comment.website
                 created = comment.creationTime
                 mode = comment.mode.code
+                this.authorization = authorization
             }
         }
         return created.toComment()
     }
 
-    override fun edit(comment: CommentDao.DaoEditComment): Comment {
-        TODO("Not yet implemented")
+    override fun edit(id: Long, comment: CommentDao.DaoEditComment, authorization: String): CommentDao.EditResponse {
+        return transaction {
+            val existing = CommentMapper.findById(id) ?: return@transaction CommentDao.EditResponse.NotFound
+            if (existing.authorization != authorization) return@transaction CommentDao.EditResponse.NotAuthorized
+            existing.txt = comment.text
+            existing.modified = comment.modificationTime
+            if (comment.author != null) existing.author = comment.author
+            if (comment.website != null) existing.website = comment.website
+            CommentDao.EditResponse.Ok(existing.toComment())
+        }
     }
 
-    override fun delete(id: Long) {
+    override fun delete(id: Long, authorization: String): Boolean {
         TODO("Not yet implemented")
     }
 
@@ -66,6 +79,7 @@ class ExposedCommentDao(private val jdbcUrl: String): CommentDao {
         val dislikes = integer("dislikes").default(0)
         val created = long("created")
         val modified = long("modified").nullable()
+        val authorization = text("authorization")
     }
 
     class CommentMapper(id: EntityID<Long>) : LongEntity(id) {
@@ -82,6 +96,7 @@ class ExposedCommentDao(private val jdbcUrl: String): CommentDao {
         var dislikes by Comments.dislikes
         var created by Comments.created
         var modified by Comments.modified
+        var authorization by Comments.authorization
 
         fun toComment(): Comment = Comment(
             id = id.value,

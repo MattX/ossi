@@ -20,6 +20,7 @@ dependencies {
     implementation("io.ktor:ktor-server-core:$ktorVersion")
     implementation("io.ktor:ktor-server-netty:$ktorVersion")
     implementation("io.ktor:ktor-gson:$ktorVersion")
+    implementation("io.ktor:ktor-locations:$ktorVersion")
     implementation("com.google.code.gson:gson:2.8.6")
     implementation("org.xerial:sqlite-jdbc:3.30.1")
     implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
