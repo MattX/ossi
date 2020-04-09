@@ -14,6 +14,7 @@
 
 package io.terbium.ossi
 
+import com.moandjiezana.toml.Toml
 import io.ktor.application.Application
 import io.ktor.application.ApplicationCall
 import io.ktor.application.call
@@ -39,6 +40,8 @@ import io.ktor.routing.routing
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import io.ktor.util.date.toGMTDate
+import java.io.File
+import java.lang.RuntimeException
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 import java.util.concurrent.TimeUnit
@@ -165,9 +168,26 @@ data class Like(val id: Long)
 data class Dislike(val id: Long)
 
 fun main(args: Array<String>) {
+    val configPath = args.getOrNull(0)
+    val dao = if (configPath != null) {
+        val configFile = Toml().read(File(configPath))
+        when (val dbType = configFile.getString("db").toLowerCase()) {
+            "firestore" -> {
+                val firestoreTable = configFile.getTable("firestore")
+                FirestoreDao(firestoreTable.getString("project"), firestoreTable.getString("kind"))
+            }
+            "sqlite" -> {
+                val sqliteTable = configFile.getTable("firestore")
+                SqliteDao("jdbc:sqlite:${sqliteTable.getString("dbPath")})")
+            }
+            else -> throw RuntimeException("unknown database type: $dbType")
+        }
+    } else {
+        SqliteDao("jdbc:sqlite:test.db")
+    }
+
     val server = embeddedServer(Netty, 8080) {
-        // module(ExposedDao("jdbc:sqlite:test.db"))
-        module(FirestoreDao())
+        module(dao)
     }
     server.start(wait = true)
 }

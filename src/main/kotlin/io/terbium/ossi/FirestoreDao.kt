@@ -17,13 +17,11 @@ package io.terbium.ossi
 import com.google.cloud.datastore.*
 import java.util.*
 
-class FirestoreDao : CommentDao {
+class FirestoreDao(projectName: String, private val kind: String) : CommentDao {
     private val datastore = DatastoreOptions.getDefaultInstance().toBuilder()
-        .setProjectId("terbium")
+        .setProjectId(projectName)
         .build()
         .service
-
-    private val kind = "Comment"
 
     override fun get(uri: String): List<Comment> {
         val query = Query.newEntityQueryBuilder()

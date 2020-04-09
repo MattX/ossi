@@ -1,7 +1,10 @@
 /.gradle/
 /.idea/
 /node_modules/
-/static/
+/static/js/components/
+/static/js/*.dev.js
+/static/js/*.min.js
+build/
 config.toml
 
-Terbium-183cf9484fde.json
+/*.json
