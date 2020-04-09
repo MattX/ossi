@@ -27,6 +27,9 @@ import io.ktor.server.netty.Netty
 import io.ktor.util.date.toGMTDate
 import java.time.Instant
 import java.time.temporal.ChronoUnit
+import java.util.concurrent.TimeUnit
+
+val cookieValiditySeconds = TimeUnit.HOURS.toSeconds(24)
 
 fun Application.module(dao: CommentDao) {
     install(DefaultHeaders)
@@ -68,11 +71,11 @@ fun Application.module(dao: CommentDao) {
                 )
 
                 // TODO what is this madness
-                val cookieExptime = Instant.now().plus(900, ChronoUnit.SECONDS).toGMTDate()
+                val cookieExptime = Instant.now().plus(cookieValiditySeconds, ChronoUnit.SECONDS).toGMTDate()
                 call.response.cookies.append(Cookie(savedComment.id.toString(), authorization, path = "/",
                     expires = cookieExptime))
                 call.response.headers.append("X-Set-Cookie",
-                "isso-${savedComment.id}=$authorization; Max-Age=900; Path=/")
+                "isso-${savedComment.id}=$authorization; Max-Age=$cookieValiditySeconds}; Path=/")
                 call.respond(HttpStatusCode.Created, savedComment)
             }
             post("/count") {
@@ -132,8 +135,7 @@ fun Application.module(dao: CommentDao) {
 }
 
 suspend fun vote(id: Long, call: ApplicationCall, upvote: Boolean, dao: CommentDao) {
-    val voteResult = dao.vote(id, call.request.origin.remoteHost, true)
-    when (voteResult) {
+    when (val voteResult = dao.vote(id, call.request.origin.remoteHost, upvote)) {
         null -> call.response.status(HttpStatusCode.NotFound)
         else -> call.respond(LikeResponse(voteResult.likes, voteResult.dislikes))
     }
@@ -150,7 +152,8 @@ data class Dislike(val id: Long)
 
 fun main(args: Array<String>) {
     val server = embeddedServer(Netty, 8080) {
-        module(ExposedCommentDao("jdbc:sqlite:test.db"))
+        // module(ExposedDao("jdbc:sqlite:test.db"))
+        module(FirestoreDao())
     }
     server.start(wait = true)
 }

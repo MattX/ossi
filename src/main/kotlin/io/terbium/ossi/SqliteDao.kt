@@ -12,7 +12,7 @@ import java.lang.RuntimeException
 import java.sql.Connection
 import java.util.*
 
-class ExposedCommentDao(jdbcUrl: String): CommentDao {
+class SqliteDao(jdbcUrl: String): CommentDao {
     init {
         Database.connect(jdbcUrl)
         TransactionManager.manager.defaultIsolationLevel = Connection.TRANSACTION_SERIALIZABLE
@@ -30,10 +30,6 @@ class ExposedCommentDao(jdbcUrl: String): CommentDao {
 
     override fun getId(id: Long): Comment? = transaction {
         CommentMapper.findById(id)?.toComment()
-    }
-
-    override fun getRecent(uri: String, limit: Int): List<Comment> {
-        TODO("Not yet implemented")
     }
 
     override fun new(comment: CommentDao.DaoNewComment, authorization: String): Comment {
@@ -76,7 +72,6 @@ class ExposedCommentDao(jdbcUrl: String): CommentDao {
     }
 
     override fun vote(id: Long, clientId: String, upvote: Boolean): CommentDao.VoteResponse? {
-        if (clientId.contains(',')) throw RuntimeException("client id may not contain commas: $clientId")
         return transaction {
             val existing = CommentMapper.findById(id) ?: return@transaction null
             val voterBloomFilter = VoterBloomFilter(b64dec.decode(existing.voters))
@@ -90,7 +85,7 @@ class ExposedCommentDao(jdbcUrl: String): CommentDao {
         }
     }
 
-    object Comments: LongIdTable() {
+    private object Comments: LongIdTable() {
         val uri = text("uri")
         val parent = long("parent").nullable()
         val txt = text("text")
@@ -106,7 +101,7 @@ class ExposedCommentDao(jdbcUrl: String): CommentDao {
         val voters = text("voters").default(b64enc.encodeToString(VoterBloomFilter.new().save()))
     }
 
-    class CommentMapper(id: EntityID<Long>) : LongEntity(id) {
+    private class CommentMapper(id: EntityID<Long>) : LongEntity(id) {
         companion object : LongEntityClass<CommentMapper>(Comments)
 
         var uri by Comments.uri
@@ -139,7 +134,7 @@ class ExposedCommentDao(jdbcUrl: String): CommentDao {
     }
 
     companion object {
-        val b64dec = Base64.getDecoder()
-        val b64enc = Base64.getEncoder()
+        private val b64dec = Base64.getDecoder()
+        private val b64enc = Base64.getEncoder()
     }
 }

@@ -1,3 +1,7 @@
 /.gradle/
 /.idea/
 /node_modules/
+/static/
+config.toml
+
+Terbium-183cf9484fde.json

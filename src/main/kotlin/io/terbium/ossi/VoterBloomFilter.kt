@@ -26,8 +26,8 @@ class VoterBloomFilter private constructor(private val filter: BloomFilter<Strin
     fun put(s: String): Boolean = filter.put(s)
 
     companion object {
-        const val EXPECTED_INSERTIONS = 2000
-        const val ERROR_RATE = 0.05
+        private const val EXPECTED_INSERTIONS = 2000
+        private const val ERROR_RATE = 0.05
 
         fun new() = VoterBloomFilter(BloomFilter.create(VoterFunnel, EXPECTED_INSERTIONS, ERROR_RATE))
     }

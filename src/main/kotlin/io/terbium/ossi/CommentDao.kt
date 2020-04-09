@@ -5,8 +5,6 @@ interface CommentDao {
 
     fun getId(id: Long): Comment?
 
-    fun getRecent(uri: String, limit: Int): List<Comment>
-
     fun new(comment: DaoNewComment, authorization: String): Comment
 
     fun edit(id: Long, comment: DaoEditComment, authorization: String): EditResponse

@@ -6,8 +6,8 @@ import java.util.*
 import javax.crypto.SecretKeyFactory
 import javax.crypto.spec.PBEKeySpec
 
-val random = SecureRandom()
-val b64enc = Base64.getEncoder()
+private val random = SecureRandom()
+private val b64enc = Base64.getEncoder()
 
 // TODO don't do this
 fun pbkdf2(of: String): String {

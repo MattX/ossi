@@ -28,6 +28,8 @@ dependencies {
     implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
     implementation("com.atlassian.commonmark:commonmark:0.14.0")
     implementation("com.google.guava:guava:28.2-jre")
+    implementation("com.google.cloud:google-cloud-datastore:1.102.3")
+    implementation("com.moandjiezana.toml:toml4j:0.7.2")
     implementation("ch.qos.logback:logback-classic:1.2.3")
 }
 
