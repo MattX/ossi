@@ -12,7 +12,6 @@
     margin: 0;
 }
 #isso-thread > h4 {
-    color: #555;
     font-weight: bold;
 }
 #isso-thread > .isso-feedlink {
@@ -27,9 +26,6 @@
     min-height: 58px;
     outline: 0;
 }
-#isso-thread .textarea.placeholder {
-    color: #757575;
-}
 
 #isso-root .isso-comment {
     max-width: 68em;
@@ -42,7 +38,7 @@
 }
 #isso-root .isso-comment:not(:first-of-type),
 .isso-follow-up .isso-comment {
-    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    border-top: 1px solid;
 }
 .isso-comment > div.avatar {
     display: block;
@@ -53,9 +49,8 @@
 .isso-comment > div.avatar > svg {
     max-width: 48px;
     max-height: 48px;
-    border: 1px solid rgba(0, 0, 0, 0.2);
+    border: 1px solid;
     border-radius: 3px;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 .isso-comment > div.text-wrapper {
     display: block;
@@ -76,22 +71,14 @@
 .isso-comment > div.text-wrapper > .isso-comment-header a.permalink,
 .isso-comment > div.text-wrapper > .isso-comment-header .note,
 .isso-comment > div.text-wrapper > .isso-comment-header a.parent {
-    color: gray !important;
     font-weight: normal;
     text-shadow: none !important;
-}
-.isso-comment > div.text-wrapper > .isso-comment-header .spacer:hover,
-.isso-comment > div.text-wrapper > .isso-comment-header a.permalink:hover,
-.isso-comment > div.text-wrapper > .isso-comment-header .note:hover,
-.isso-comment > div.text-wrapper > .isso-comment-header a.parent:hover {
-    color: #606060 !important;
 }
 .isso-comment > div.text-wrapper > .isso-comment-header .note {
     float: right;
 }
 .isso-comment > div.text-wrapper > .isso-comment-header .author {
     font-weight: bold;
-    color: #555;
 }
 .isso-comment > div.text-wrapper > .textarea-wrapper .textarea,
 .isso-comment > div.text-wrapper > .textarea-wrapper .preview {
@@ -115,13 +102,12 @@
 .isso-comment > div.text-wrapper > div.textarea-wrapper .textarea,
 .isso-comment > div.text-wrapper > div.textarea-wrapper .preview {
     width: 100%;
-    border: 1px solid #f0f0f0;
+    border: 1px solid;
     border-radius: 2px;
-    box-shadow: 0 0 2px #888;
+    box-shadow: 0 0 2px;
 }
 .isso-comment > div.text-wrapper > .isso-comment-footer {
     font-size: 0.80em;
-    color: gray !important;
     clear: left;
 }
 .isso-feedlink,
@@ -129,20 +115,12 @@
     font-weight: bold;
     text-decoration: none;
 }
-.isso-feedlink:hover,
-.isso-comment > div.text-wrapper > .isso-comment-footer a:hover {
-    color: #111111 !important;
-    text-shadow: #aaaaaa 0 0 1px !important;
-}
 .isso-comment > div.text-wrapper > .isso-comment-footer > a {
     position: relative;
     top: .2em;
 }
 .isso-comment > div.text-wrapper > .isso-comment-footer > a + a {
     padding-left: 1em;
-}
-.isso-comment > div.text-wrapper > .isso-comment-footer .votes {
-    color: gray;
 }
 .isso-comment > div.text-wrapper > .isso-comment-footer .upvote svg,
 .isso-comment > div.text-wrapper > .isso-comment-footer .downvote svg {
@@ -174,9 +152,7 @@
     margin: 0 0 .3em;
     padding: .4em .8em;
     border-radius: 3px;
-    background-color: #fff;
-    border: 1px solid rgba(0, 0, 0, 0.2);
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    border: 1px solid;
 }
 .isso-postbox > .form-wrapper input[type=checkbox] {
     vertical-align: middle;
@@ -188,10 +164,6 @@
     font-size: 0.90em;
     padding-top: .3em;
 }
-#isso-thread .textarea:focus,
-#isso-thread input:focus {
-    border-color: rgba(0, 0, 0, 0.8);
-}
 .isso-postbox > .form-wrapper > .auth-section .input-wrapper {
     display: inline-block;
     position: relative;
@@ -202,10 +174,8 @@
     padding: .3em 10px;
     max-width: 100%;
     border-radius: 3px;
-    background-color: #fff;
     line-height: 1.4em;
-    border: 1px solid rgba(0, 0, 0, 0.2);
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    border: 1px solid;
 }
 .isso-postbox > .form-wrapper > .auth-section .post-action {
     display: inline-block;
@@ -215,18 +185,10 @@
 .isso-postbox > .form-wrapper > .auth-section .post-action > input {
     padding: calc(.3em - 1px);
     border-radius: 2px;
-    border: 1px solid #CCC;
-    background-color: #DDD;
+    border: 1px solid;
     cursor: pointer;
     outline: 0;
     line-height: 1.4em;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-}
-.isso-postbox > .form-wrapper > .auth-section .post-action > input:hover {
-    background-color: #CCC;
-}
-.isso-postbox > .form-wrapper > .auth-section .post-action > input:active {
-    background-color: #BBB;
 }
 .isso-postbox > .form-wrapper .preview,
 .isso-postbox > .form-wrapper input[name="edit"],
@@ -240,16 +202,6 @@
 .isso-postbox.preview-mode > .form-wrapper input[name="edit"] {
     display: inline;
 }
-.isso-postbox > .form-wrapper .preview {
-    background-color: #f8f8f8;
-    background: repeating-linear-gradient(
-        -45deg,
-        #f8f8f8,
-        #f8f8f8 10px,
-        #fff 10px,
-        #fff 20px
-    );
-}
 .isso-postbox > .form-wrapper > .notification-section {
     display: none;
     padding-bottom: 10px;
@@ -262,5 +214,211 @@
     }
     .isso-postbox > .form-wrapper > .auth-section .input-wrapper input {
         width: 100%;
+    }
+}
+
+
+/** COLORS **/
+
+
+@media (prefers-color-scheme: light) {
+    #isso-thread > h4 {
+        color: #555;
+    }
+
+    #isso-thread .textarea.placeholder {
+        color: #757575;
+    }
+
+    #isso-root .isso-comment:not(:first-of-type),
+    .isso-follow-up .isso-comment {
+        border-top-color: rgba(0, 0, 0, 0.1);
+    }
+
+    .isso-comment > div.avatar > svg {
+        border-color: rgba(0, 0, 0, 0.2);
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    .isso-comment > div.text-wrapper > .isso-comment-header .spacer,
+    .isso-comment > div.text-wrapper > .isso-comment-header a.permalink,
+    .isso-comment > div.text-wrapper > .isso-comment-header .note,
+    .isso-comment > div.text-wrapper > .isso-comment-header a.parent {
+        color: gray !important;
+    }
+
+    .isso-comment > div.text-wrapper > .isso-comment-header .spacer:hover,
+    .isso-comment > div.text-wrapper > .isso-comment-header a.permalink:hover,
+    .isso-comment > div.text-wrapper > .isso-comment-header .note:hover,
+    .isso-comment > div.text-wrapper > .isso-comment-header a.parent:hover {
+        color: #606060 !important;
+    }
+
+    .isso-comment > div.text-wrapper > div.textarea-wrapper .textarea,
+    .isso-comment > div.text-wrapper > div.textarea-wrapper .preview {
+        width: 100%;
+        border-color: #f0f0f0;
+        box-shadow: 0 0 2px #888;
+    }
+
+    .isso-comment > div.text-wrapper > .isso-comment-footer {
+        color: gray !important;
+    }
+
+    .isso-feedlink:hover,
+    .isso-comment > div.text-wrapper > .isso-comment-footer a:hover {
+        color: #111111 !important;
+        text-shadow: #aaaaaa 0 0 1px !important;
+    }
+
+    .isso-comment > div.text-wrapper > .isso-comment-footer .votes {
+        color: gray;
+    }
+
+    .isso-postbox > .form-wrapper .textarea,
+    .isso-postbox > .form-wrapper .preview {
+        background-color: #fff;
+        border-color: rgba(0, 0, 0, 0.2);
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    .isso-postbox > .form-wrapper > .auth-section .input-wrapper input {
+        background-color: #fff;
+        border-color: rgba(0, 0, 0, 0.2);
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    .isso-postbox > .form-wrapper > .auth-section .post-action > input {
+        border-color: #CCC;
+        background-color: #DDD;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    .isso-postbox > .form-wrapper .preview {
+        background: #f8f8f8 repeating-linear-gradient(
+                -45deg,
+                #f8f8f8,
+                #f8f8f8 10px,
+                #fff 10px,
+                #fff 20px
+        );
+    }
+
+    .isso-postbox > .form-wrapper > .auth-section .post-action > input:hover {
+        background-color: #CCC;
+    }
+
+    .isso-postbox > .form-wrapper > .auth-section .post-action > input:active {
+        background-color: #BBB;
+    }
+
+    #isso-thread .textarea:focus,
+    #isso-thread input:focus {
+        border-color: rgba(0, 0, 0, 0.8);
+    }
+
+    .isso-comment > div.text-wrapper > .isso-comment-header .author {
+        color: #555;
+    }
+}
+
+@media (prefers-color-scheme: dark) {
+    #isso-thread > h4 {
+        color: #555;
+    }
+
+    #isso-thread .textarea.placeholder {
+        color: #757575;
+    }
+
+    #isso-root .isso-comment:not(:first-of-type),
+    .isso-follow-up .isso-comment {
+        border-top-color: rgba(0, 0, 0, 0.1);
+    }
+
+    .isso-comment > div.avatar > svg {
+        border-color: rgba(0, 0, 0, 0.2);
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    .isso-comment > div.text-wrapper > .isso-comment-header .spacer,
+    .isso-comment > div.text-wrapper > .isso-comment-header a.permalink,
+    .isso-comment > div.text-wrapper > .isso-comment-header .note,
+    .isso-comment > div.text-wrapper > .isso-comment-header a.parent {
+        color: gray !important;
+    }
+
+    .isso-comment > div.text-wrapper > .isso-comment-header .spacer:hover,
+    .isso-comment > div.text-wrapper > .isso-comment-header a.permalink:hover,
+    .isso-comment > div.text-wrapper > .isso-comment-header .note:hover,
+    .isso-comment > div.text-wrapper > .isso-comment-header a.parent:hover {
+        color: #606060 !important;
+    }
+
+    .isso-comment > div.text-wrapper > div.textarea-wrapper .textarea,
+    .isso-comment > div.text-wrapper > div.textarea-wrapper .preview {
+        width: 100%;
+        border-color: #f0f0f0;
+        box-shadow: 0 0 2px #888;
+    }
+
+    .isso-comment > div.text-wrapper > .isso-comment-footer {
+        color: gray !important;
+    }
+
+    .isso-feedlink:hover,
+    .isso-comment > div.text-wrapper > .isso-comment-footer a:hover {
+        color: #ccc !important;
+        text-shadow: #aaaaaa 0 0 1px !important;
+    }
+
+    .isso-comment > div.text-wrapper > .isso-comment-footer .votes {
+        color: gray;
+    }
+
+    .isso-postbox > .form-wrapper .textarea,
+    .isso-postbox > .form-wrapper .preview {
+        background-color: #333;
+        border-color: rgba(0, 0, 0, 0.2);
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    .isso-postbox > .form-wrapper > .auth-section .input-wrapper input {
+        background-color: #333;
+        border-color: rgba(0, 0, 0, 0.2);
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    .isso-postbox > .form-wrapper > .auth-section .post-action > input {
+        border-color: #CCC;
+        background-color: #DDD;
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    .isso-postbox > .form-wrapper .preview {
+        background: #444 repeating-linear-gradient(
+                -45deg,
+                #444,
+                #444 10px,
+                #333 10px,
+                #333 20px
+        );
+    }
+
+    .isso-postbox > .form-wrapper > .auth-section .post-action > input:hover {
+        background-color: #CCC;
+    }
+
+    .isso-postbox > .form-wrapper > .auth-section .post-action > input:active {
+        background-color: #BBB;
+    }
+
+    #isso-thread .textarea:focus,
+    #isso-thread input:focus {
+        border-color: rgba(0, 0, 0, 0.8);
+    }
+
+    .isso-comment > div.text-wrapper > .isso-comment-header .author {
+        color: #555;
     }
 }

@@ -48,7 +48,7 @@ import java.util.concurrent.TimeUnit
 
 val cookieValiditySeconds = TimeUnit.HOURS.toSeconds(24)
 
-fun Application.module(dao: CommentDao) {
+fun Application.ossi(dao: CommentDao, prefix: String, serveStatic: Boolean = false) {
     install(DefaultHeaders)
 
     install(ContentNegotiation) {
@@ -68,14 +68,14 @@ fun Application.module(dao: CommentDao) {
     install(Locations)
 
     routing {
-        route("/isso") {
+        route("/$prefix") {
             get("/") {
-                val uri = call.request.queryParameters["uri"]!!
+                val uri = call.request.queryParameters["uri"] ?: return@get call.response.status(HttpStatusCode.BadRequest)
                 val comments = dao.get(uri)
                 call.respond(makeThread(comments))
             }
             post("/new") {
-                val uri = call.request.queryParameters["uri"]!!
+                val uri = call.request.queryParameters["uri"] ?: return@post call.response.status(HttpStatusCode.BadRequest)
                 val newComment = call.receive<NewCommentRequest>()
                 val authorization = getAuthenticationToken()
                 val savedComment = dao.new(
@@ -135,17 +135,20 @@ fun Application.module(dao: CommentDao) {
             }
             post<Like> { vote(it.id, call, true, dao) }
             post<Dislike> { vote(it.id, call, false, dao) }
-            static("/js") {
-                files("static/js")
-            }
-            static("/css") {
-                files("static/css")
-            }
-            static("/img") {
-                files("static/img")
+
+            if (serveStatic) {
+                static("/js") {
+                    files("static/js")
+                }
+                static("/css") {
+                    files("static/css")
+                }
+                static("/img") {
+                    files("static/img")
+                }
             }
         }
-        static("/") {
+        if (serveStatic) static("/") {
             file("index.html", "static/index.html")
         }
     }
@@ -187,7 +190,7 @@ fun main(args: Array<String>) {
     }
 
     val server = embeddedServer(Netty, 8080) {
-        module(dao)
+        ossi(dao, "isso", serveStatic = true)
     }
     server.start(wait = true)
 }
