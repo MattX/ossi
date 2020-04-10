@@ -16,6 +16,8 @@ package io.terbium.ossi
 
 import com.google.gson.*
 import com.google.gson.annotations.SerializedName
+import com.sun.org.apache.xpath.internal.operations.Bool
+import io.ktor.util.escapeHTML
 import java.lang.RuntimeException
 import java.lang.reflect.Type
 
@@ -49,7 +51,7 @@ data class Comment(
         totalReplies = 0
     )
 
-    fun rendered() = copy(text = renderMarkdown(text))
+    fun rendered() = copy(text = renderMarkdown(text), author = author?.escapeHTML(), website = website?.escapeHTML())
 }
 
 enum class CommentMode(val code: Int) {
@@ -134,6 +136,10 @@ data class NewCommentRequest(
         hash = pbkdf2(email ?: ip),
         mode = CommentMode.ACCEPTED
     )
+
+    fun validate(): Boolean {
+        return text.length <= 50_000 && (author?.length ?: 0) <= 50 && (website?.length) ?: 0 <= 50
+    }
 }
 
 data class EditCommentRequest(
@@ -147,6 +153,10 @@ data class EditCommentRequest(
         website = website,
         modificationTime = time
     )
+
+    fun validate(): Boolean {
+        return text.length <= 50_000 && (author?.length ?: 0) <= 50 && (website?.length) ?: 0 <= 50
+    }
 }
 
 data class PreviewRequest(val text: String)

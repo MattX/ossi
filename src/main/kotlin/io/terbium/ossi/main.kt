@@ -77,6 +77,7 @@ fun Application.ossi(dao: CommentDao, prefix: String, serveStatic: Boolean = fal
             post("/new") {
                 val uri = call.request.queryParameters["uri"] ?: return@post call.response.status(HttpStatusCode.BadRequest)
                 val newComment = call.receive<NewCommentRequest>()
+                if (!newComment.validate()) return@post call.response.status(HttpStatusCode.BadRequest)
                 val authorization = getAuthenticationToken()
                 val savedComment = dao.new(
                     newComment.toDaoNewComment(
@@ -109,12 +110,14 @@ fun Application.ossi(dao: CommentDao, prefix: String, serveStatic: Boolean = fal
                 }
             }
             put<GetId> { getId ->
-                val editComment = call.receive<EditCommentRequest>().toDaoEditComment(
-                    Instant.now().toEpochMilli() / 1000L
-                )
+                val editComment = call.receive<EditCommentRequest>()
+                if (!editComment.validate()) return@put call.response.status(HttpStatusCode.BadRequest)
                 val authorization = call.request.cookies[getId.id.toString()]
                     ?: return@put call.response.status(HttpStatusCode.Forbidden)
-                when (val response = dao.edit(getId.id, editComment, authorization)) {
+                val daoEditComment = editComment.toDaoEditComment(
+                Instant.now().toEpochMilli() / 1000L
+                )
+                when (val response = dao.edit(getId.id, daoEditComment, authorization)) {
                     is CommentDao.EditResponse.NotFound -> call.response.status(HttpStatusCode.NotFound)
                     is CommentDao.EditResponse.NotAuthorized -> call.response.status(HttpStatusCode.Forbidden)
                     is CommentDao.EditResponse.Ok -> call.respond(response.comment.rendered())
@@ -172,8 +175,8 @@ data class Dislike(val id: Long)
 
 fun main(args: Array<String>) {
     val configPath = args.getOrNull(0)
-    val dao = if (configPath != null) {
-        val configFile = Toml().read(File(configPath))
+    val configFile = configPath?.let { Toml().read(File(it)) }
+    val dao = if (configFile != null) {
         when (val dbType = configFile.getString("db").toLowerCase()) {
             "firestore" -> {
                 val firestoreTable = configFile.getTable("firestore")
@@ -188,6 +191,7 @@ fun main(args: Array<String>) {
     } else {
         SqliteDao("jdbc:sqlite:test.db")
     }
+    val serveStatic = configFile?.getBoolean("serve_static") ?: true
 
     val server = embeddedServer(Netty, 8080) {
         ossi(dao, "isso", serveStatic = true)
